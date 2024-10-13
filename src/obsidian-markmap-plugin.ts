@@ -1,4 +1,4 @@
-import { INode } from 'markmap-common';
+import { IPureNode} from 'markmap-common';
 import { getLinkpath, Vault } from 'obsidian';
 import { INTERNAL_LINK_REGEX } from './constants';
 
@@ -9,15 +9,15 @@ export default class ObsidianMarkmap {
         this.vaultName = vault.getName();
     }
 
-    updateInternalLinks(node: INode) {
+    updateInternalLinks(node: IPureNode) {
         this.replaceInternalLinks(node);
-        if(node.c){
-            node.c.forEach(n => this.updateInternalLinks(n));
+        if(node.children){
+            node.children.forEach(n => this.updateInternalLinks(n));
         }
     }
 
-    private replaceInternalLinks(node: INode){
-        const matches = this.parseValue(node.v);
+    private replaceInternalLinks(node: IPureNode){
+        const matches = this.parseValue(node.content);
         for (let i = 0; i < matches.length; i++) {
             const match = matches[i];
             const isWikiLink = match.groups['wikitext'];
@@ -28,7 +28,7 @@ export default class ObsidianMarkmap {
             }
             const url = `obsidian://open?vault=${this.vaultName}&file=${isWikiLink ? encodeURI(getLinkpath(linkPath)) : linkPath}`;
             const link = `<a href=\"${url}\">${linkText}</a>`;
-            node.v = node.v.replace(match[0], link);
+            node.content = node.content.replace(match[0], link);
         }
     }
 

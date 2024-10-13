@@ -9,6 +9,8 @@ import { MM_VIEW_TYPE } from './constants';
 import { MindMapSettings } from './settings';
 import { MindMapSettingsTab } from './settings-tab';
 
+import * as hljs from 'highlight.js';
+(document.defaultView as any).hljs = hljs;
   
   export default class MindMap extends Plugin {
     vault: Vault;
@@ -65,11 +67,11 @@ import { MindMapSettingsTab } from './settings-tab';
     }
 
     activeLeafPath(workspace: Workspace) {
-      return workspace.activeLeaf?.view.getState().file;
+      return <string>workspace.getLeaf()?.view.getState().file;
     }
 
     activeLeafName(workspace: Workspace) {
-      return workspace.activeLeaf?.getDisplayText();
+      return workspace.getLeaf()?.getDisplayText();
     }
 
 
